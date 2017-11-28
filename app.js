@@ -2,7 +2,15 @@
 const express = require('express');
 const app = express();
 const exphbs = require('express-handlebars');
-
+const mongoose = require('mongoose');
+//Map the global Promise - get rid of DeprecationWarning
+mongoose.Promise = global.Promise;
+//Connection to the Mongoose
+mongoose.connect('mongodb://localhost/GoalPlanner-dev',{
+    useMongoClient:true 
+})
+    .then(()=>{console.log('MongoDB Connected..')})
+    .catch((err)=>{console.log(err)})
 //Setting up the Handlebars Middleware
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
