@@ -36,6 +36,11 @@ app.get('/about', (req, res) => {
     res.render('about');
 });
 
+//Add Goal Form 
+app.get('/goals/add', (req, res) => {
+    res.render('goals/add');
+});
+
 //setting up the port to 5000
 const port = 5000;
 //listening to the port on the server start
