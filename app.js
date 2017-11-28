@@ -10,14 +10,19 @@ mongoose.connect('mongodb://localhost/GoalPlanner-dev',{
     useMongoClient:true 
 })
     .then(()=>{console.log('MongoDB Connected..')})
-    .catch((err)=>{console.log(err)})
+    .catch((err)=>{console.log(err)});
+
+//Load Goal Model
+require('./models/Goals');
+const Goal = mongoose.model('Goals')
+
 //Setting up the Handlebars Middleware
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 
 //Setting up the Index Route
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { 
     const setTitle = 'Welcome to Goal-Planner';
     res.render('index',
         {
