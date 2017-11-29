@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const exphbs = require('express-handlebars');
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 //Map the global Promise - get rid of DeprecationWarning
@@ -24,6 +25,9 @@ app.set('view engine', 'handlebars');
 //body parser MiddleWare
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json());
+
+//MiddleWare Method-Override which help in PUT Request
+app.use(methodOverride('_method'));
 
 //Setting up the Index Route
 app.get('/', (req, res) => { 
@@ -55,6 +59,19 @@ app.get('/goals/add', (req, res) => {
     res.render('goals/add');
 });
 
+//Edit Goal Form 
+app.get('/goals/edit/:_id', (req, res) => {
+    Goal.findOne({
+        _id:req.params._id
+    })
+    .then(goal =>{
+        res.render('goals/edit',{
+            goal:goal
+        });
+    })
+    
+});
+
 // Process Form
 app.post('/addGoals',(req,res)=>{
     let errors = [];
@@ -82,6 +99,30 @@ app.post('/addGoals',(req,res)=>{
             res.redirect('/goals')
         }) 
     }
+})
+
+//Edit Form Process
+app.put('/goal/:_id',(req,res)=>{
+  Goal.findOne({
+      _id: req.params._id
+  })
+  .then(goal =>{
+      //New values 
+      goal.title =req.body.title,
+      goal.details =req.body.details
+      goal.save()
+        .then(updatedGoal =>{
+            res.redirect('/goals');
+        }) 
+  });
+})
+
+//Delete Idea
+app.delete('/goal/:_id',(req,res)=>{
+    Goal.remove({_id:req.params._id})
+        .then(()=>{
+            res.redirect('/goals')
+        })
 })
 
 //setting up the port to 5000
