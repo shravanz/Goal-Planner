@@ -16,9 +16,9 @@ mongoose.connect('mongodb://localhost/GoalPlanner-dev',{
     .then(()=>{console.log('MongoDB Connected..')})
     .catch((err)=>{console.log(err)});
 
-//Load Goal Model
-require('./models/Goals');
-const Goal = mongoose.model('Goals')
+//Load Routes
+const goals = require('./routes/goals');
+const users = require('./routes/user');
 
 //Setting up the Handlebars Middleware
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
@@ -43,7 +43,7 @@ app.use(flash());
 //Set Global Variable
 app.use(function(req,res,next){
     
-    res.locals.success_msg = req.flash('Success_msg');
+    res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
     next();
@@ -65,87 +65,9 @@ app.get('/about', (req, res) => {
     res.render('about');
 });
 
-// Goal Index Page
-app.get('/goals',(req,res)=>{
-    Goal.find({})
-    .sort({date:'desc'})
-    .then(goals=>{res.render('goals/index',{
-        goals:goals
-    }) })
-    
-})
-
-//Add Goal Form 
-app.get('/goals/add', (req, res) => {
-    res.render('goals/add');
-});
-
-//Edit Goal Form 
-app.get('/goals/edit/:_id', (req, res) => {
-    Goal.findOne({
-        _id:req.params._id
-    })
-    .then(goal =>{
-        res.render('goals/edit',{
-            goal:goal
-        });
-    })
-    
-});
-
-// Process Form
-app.post('/addGoals',(req,res)=>{
-    let errors = [];
-    if(!req.body.title){
-        errors.push({text:"please add the title"})
-    }
-    if(!req.body.details){
-        errors.push({text:"please add the details"})
-    }
-    if(errors.length>0){
-        res.render('goals/add',{
-            errors:errors,
-            title:req.body.title,
-            details:req.body.details
-        })
-    }
-    else{
-        const newUser = {
-            title:req.body.title,
-            details:req.body.details,
-        }
-        new Goal(newUser)
-        .save()
-        .then(goal =>{
-            res.redirect('/goals')
-        }) 
-    }
-})
-
-//Edit Form Process
-app.put('/goal/:_id',(req,res)=>{
-  Goal.findOne({
-      _id: req.params._id
-  })
-  .then(goal =>{
-      //New values 
-      goal.title =req.body.title,
-      goal.details =req.body.details
-      goal.save()
-        .then(updatedGoal =>{
-            res.redirect('/goals');
-        }) 
-  });
-})
-
-//Delete Idea
-app.delete('/goal/:_id',(req,res)=>{
-    Goal.remove({_id:req.params._id})
-        .then(()=>{
-            req.flash('success_msg','your Goal is Removed')
-            res.redirect('/goals')
-        })
-})
+// Using The Routes
+app.use('/',goals);
+app.use('/',users);
 
 //setting up the port to 5000
 const port = 5000;
