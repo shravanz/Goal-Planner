@@ -11,6 +11,10 @@ const GoalScheam = new Schema({
         type:String,
         details:true
     },
+    user:{
+        type:String,
+        required:true
+    },
     date:{
         type:Date,
         default:Date.now

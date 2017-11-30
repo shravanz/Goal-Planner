@@ -1,14 +1,15 @@
 const express = require('express');
 const router =  express.Router();
 const mongoose = require('mongoose');
+const {ensureAuthenticated}  = require('../helpers/auth');
 
 //Load Goal Model
 require('../models/Goals');
 const Goal = mongoose.model('Goals')
 
 // Goal Index Page
-router.get('/goals',(req,res)=>{
-    Goal.find({})
+router.get('/goals',ensureAuthenticated,(req,res)=>{
+    Goal.find({user:req.user.id})
     .sort({date:'desc'})
     .then(goals=>{res.render('goals/index',{
         goals:goals
@@ -17,25 +18,31 @@ router.get('/goals',(req,res)=>{
 })
 
 //Add Goal Form 
-router.get('/goals/add', (req, res) => {
+router.get('/goals/add',ensureAuthenticated, (req, res) => {
     res.render('goals/add');
 });
 
 //Edit Goal Form 
-router.get('/goals/edit/:_id', (req, res) => {
+router.get('/goals/edit/:_id', ensureAuthenticated, (req, res) => {
     Goal.findOne({
         _id:req.params._id
     })
     .then(goal =>{
-        res.render('goals/edit',{
-            goal:goal
-        });
+        if( goal.user!= req.user.id){
+            req.flash('error_msg','Not Authorized');
+            res.redirect('/goals');
+        }else{
+            res.render('goals/edit',{
+                goal:goal
+            });
+        }
+        
     })
     
 });
 
 // Process Form
-router.post('/addGoals',(req,res)=>{
+router.post('/addGoals',ensureAuthenticated,(req,res)=>{
     let errors = [];
     if(!req.body.title){
         errors.push({text:"please add the title"})
@@ -54,6 +61,7 @@ router.post('/addGoals',(req,res)=>{
         const newUser = {
             title:req.body.title,
             details:req.body.details,
+            user:req.user._id
         }
         new Goal(newUser)
         .save()
@@ -65,7 +73,7 @@ router.post('/addGoals',(req,res)=>{
 });
 
 //Edit Form Process
-router.put('/goal/:_id',(req,res)=>{
+router.put('/goal/:_id', ensureAuthenticated,(req,res)=>{
   Goal.findOne({
       _id: req.params._id
   })
@@ -82,7 +90,7 @@ router.put('/goal/:_id',(req,res)=>{
 });
 
 //Delete Idea
-router.delete('/goal/:_id',(req,res)=>{
+router.delete('/goal/:_id',ensureAuthenticated,(req,res)=>{
     Goal.remove({_id:req.params._id})
         .then(()=>{
             req.flash('success_msg','your Goal is Removed')

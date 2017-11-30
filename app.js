@@ -83,7 +83,7 @@ app.use('/',goals);
 app.use('/',users);
 
 //setting up the port to 5000
-const port = 5000;
+const port = 5050;
 //listening to the port on the server start
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
