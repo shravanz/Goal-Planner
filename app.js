@@ -9,10 +9,14 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoose = require('mongoose');
+
+//DB Config
+const db = require('./config/database');
+
 //Map the global Promise - get rid of DeprecationWarning
 mongoose.Promise = global.Promise;
 //Connection to the Mongoose
-mongoose.connect('mongodb://localhost/GoalPlanner-dev', {
+mongoose.connect(db.mongoURI, {
     useMongoClient: true
 })
     .then(() => { console.log('MongoDB Connected..') })
@@ -83,7 +87,7 @@ app.use('/', goals);
 app.use('/', users);
 
 //setting up the port to 5050
-const port = 5050;
+const port = process.env.PORT || 5050;
 //listening to the port on the server start
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
