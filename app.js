@@ -5,18 +5,18 @@ const path = require('path');
 const exphbs = require('express-handlebars');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
-const session = require('express-session'); 
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoose = require('mongoose');
 //Map the global Promise - get rid of DeprecationWarning
 mongoose.Promise = global.Promise;
 //Connection to the Mongoose
-mongoose.connect('mongodb://localhost/GoalPlanner-dev',{
-    useMongoClient:true 
+mongoose.connect('mongodb://localhost/GoalPlanner-dev', {
+    useMongoClient: true
 })
-    .then(()=>{console.log('MongoDB Connected..')})
-    .catch((err)=>{console.log(err)});
+    .then(() => { console.log('MongoDB Connected..') })
+    .catch((err) => { console.log(err) });
 
 //Load Routes
 const goals = require('./routes/goals');
@@ -30,20 +30,20 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 //body parser MiddleWare
-app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
 //Static Assets 
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //MiddleWare Method-Override which help in PUT Request
 app.use(methodOverride('_method'));
 
 //MiddleWare for Express-Session
 app.use(session({
-    secret:'wumap',
-    resave:true,
-    saveUninitialized:true,
+    secret: 'wumap',
+    resave: true,
+    saveUninitialized: true,
 }));
 
 //Passport MiddleWare
@@ -53,8 +53,8 @@ app.use(passport.session());
 app.use(flash());
 
 //Set Global Variable
-app.use(function(req,res,next){
-    
+app.use(function (req, res, next) {
+
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
@@ -64,7 +64,7 @@ app.use(function(req,res,next){
 
 
 //Setting up the Index Route
-app.get('/', (req, res) => { 
+app.get('/', (req, res) => {
     const setTitle = 'Welcome to Goal-Planner';
     res.render('index',
         {
@@ -79,10 +79,10 @@ app.get('/about', (req, res) => {
 });
 
 // Using The Routes
-app.use('/',goals);
-app.use('/',users);
+app.use('/', goals);
+app.use('/', users);
 
-//setting up the port to 5000
+//setting up the port to 5050
 const port = 5050;
 //listening to the port on the server start
 app.listen(port, () => {

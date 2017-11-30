@@ -2,18 +2,18 @@
 <div class="card card-body mb-2">
     <h4>{{title}}</h4>
     <p>{{details}}</p>
-    
+
 </div>
 <div class="col-md-6 col-md-offset-2">
-  <a class="btn btn-dark btn-md col-md-5 btn-sm mb-1" href="/goals/edit/{{_id}}">Edit</a>
- 
-<form method="post" action="goal/{{_id}}?_method=DELETE">
-    <input type="hidden" name="_method" value="DELETE">
-    <input type="Submit" class="btn btn-danger btn-md col-md-5 btn-sm mb-1" value="Delete">
-    </form>
- </div>
+    <a class="btn btn-dark btn-md col-md-5 btn-sm mb-1" href="/goals/edit/{{_id}}">Edit</a>
 
- 
+    <form method="post" action="goal/{{_id}}?_method=DELETE">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="Submit" class="btn btn-danger btn-md col-md-5 btn-sm mb-1" value="Delete">
+    </form>
+</div>
+
+
 {{else}}
 <p>No Goals are Listed</p>
 {{/each}}

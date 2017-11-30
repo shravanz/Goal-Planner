@@ -1,24 +1,24 @@
 const mongoose = require('mongoose');
-const Schema  = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 //Create A Schema
 const GoalScheam = new Schema({
-    title:{
-        type:String,
-        required:true
+    title: {
+        type: String,
+        required: true
     },
-    details:{
-        type:String,
-        details:true
+    details: {
+        type: String,
+        details: true
     },
-    user:{
-        type:String,
-        required:true
+    user: {
+        type: String,
+        required: true
     },
-    date:{
-        type:Date,
-        default:Date.now
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 
-mongoose.model('Goals',GoalScheam); 
+mongoose.model('Goals', GoalScheam); 
