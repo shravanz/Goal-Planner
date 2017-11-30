@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session'); 
 const bodyParser = require('body-parser');
+const passport = require('passport');
 const mongoose = require('mongoose');
 //Map the global Promise - get rid of DeprecationWarning
 mongoose.Promise = global.Promise;
@@ -20,6 +21,9 @@ mongoose.connect('mongodb://localhost/GoalPlanner-dev',{
 //Load Routes
 const goals = require('./routes/goals');
 const users = require('./routes/user');
+
+// Passport Config 
+require('./config/passport')(passport);
 
 //Setting up the Handlebars Middleware
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
@@ -42,6 +46,10 @@ app.use(session({
     saveUninitialized:true,
 }));
 
+//Passport MiddleWare
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 
 //Set Global Variable
@@ -50,6 +58,7 @@ app.use(function(req,res,next){
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;
     next();
 });
 

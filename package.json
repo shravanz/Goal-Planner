@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/shravanz/GoalPlanner#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "connect-flash": "^0.1.1",
     "express": "^4.16.2",
@@ -25,6 +26,8 @@
     "express-session": "^1.15.6",
     "method-override": "^2.3.10",
     "mongoose": "^4.13.5",
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
   }
 }
